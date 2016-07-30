@@ -1,32 +1,15 @@
 package com.tmulhern3;
 
-/**
- * Created by Tim on 7/30/2016.
- */
-
-import com.tmulhern3.models.Id;
 import com.tmulhern3.models.Token;
-import com.tmulhern3.utils.TokenBuilder;
 
-import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Created by Tim on 7/30/2016.
+ */
 public class Driver {
-    static Logger logger = Logger.getLogger(Driver.class.getName());
-
-    private static Set<String> reservedWords = new HashSet();
-    private static TokenBuilder tokenBuilder = new TokenBuilder();
-
-    private static void initializeLexer() {
-        reservedWords.add("begin");
-        reservedWords.add("end");
-        reservedWords.add("provider");
-        reservedWords.add("server");
-        reservedWords.add("id");
-    }
+    private static Logger logger = Logger.getLogger(Driver.class.getName());
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -34,48 +17,13 @@ public class Driver {
 
             System.exit(1);
         }
-        initializeLexer();
 
         String filename = args[0];
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-            Token token;
-            while((token = nextToken(reader)) != null) {
-                logger.log(Level.INFO, token.toString());
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        Lexer lexer = new Lexer(filename);
+
+        Token token;
+        while((token = lexer.nextToken()) != null) {
+            logger.log(Level.INFO, token.toString());
         }
-    }
-
-    private static Token nextToken(BufferedReader reader) {
-        try {
-            int c;
-            while ((c = reader.read()) != -1) {
-                char peek = (char) c;
-                if (peek == 0x20 || peek == 0x0D || peek == 0x0A) {
-                    continue;
-                }
-                if (Character.isLetter(peek)) {
-                    StringBuffer sb = new StringBuffer();
-                    do {
-                        sb.append(peek);
-                        peek = (char) reader.read();
-                    } while (Character.isLetterOrDigit(peek));
-                    if (reservedWords.contains(sb.toString())) {
-                        return tokenBuilder.buildTokenFromReservedWord(sb.toString());
-                    }
-                    return new Id(sb.toString());
-                } else {
-                    return tokenBuilder.buildTokenFromCharacter(peek);
-                }
-            }
-        } catch (IOException e) {
-            logger.log(Level.WARNING, e.toString());
-
-            return null;
-        }
-
-        return null;
     }
 }

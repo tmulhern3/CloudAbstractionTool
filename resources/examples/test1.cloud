@@ -1,0 +1,9 @@
+begin
+
+    provider = aws
+
+    server = (
+        id = test
+    )
+
+end

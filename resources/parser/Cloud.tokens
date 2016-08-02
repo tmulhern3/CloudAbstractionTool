@@ -1,0 +1,16 @@
+BEGIN=1
+END=2
+SERVER=3
+PROVIDER=4
+EQ=5
+LPAREN=6
+RPAREN=7
+ID=8
+WHITESPACE=9
+'begin'=1
+'end'=2
+'server'=3
+'provider'=4
+'='=5
+'('=6
+')'=7

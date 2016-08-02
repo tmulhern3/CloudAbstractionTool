@@ -1,7 +1,16 @@
 package com.tmulhern3;
 
-import com.tmulhern3.models.Token;
+import com.tmulhern3.utils.CloudBaseListener;
+import com.tmulhern3.parser.CloudLexer;
+import com.tmulhern3.parser.CloudParser;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,12 +27,23 @@ public class Driver {
             System.exit(1);
         }
 
-        String filename = args[0];
-        Lexer lexer = new Lexer(filename);
-
-        Token token;
-        while((token = lexer.nextToken()) != null) {
-            logger.log(Level.INFO, token.toString());
+        String fileText = null;
+        try {
+            fileText = readFile(args[0]);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        CloudLexer cloudLexer = new CloudLexer(new ANTLRInputStream(fileText));
+        CommonTokenStream tokens = new CommonTokenStream(cloudLexer);
+        CloudParser cloudParser = new CloudParser(tokens);
+        ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
+        parseTreeWalker.walk(new CloudBaseListener(), cloudParser.program());
+    }
+
+    private static String readFile(String path)
+            throws IOException
+    {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, Charset.defaultCharset());
     }
 }

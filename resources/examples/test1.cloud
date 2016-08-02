@@ -6,4 +6,8 @@ begin
         id = test
     )
 
+    server = (
+        id = tests
+    )
+
 end

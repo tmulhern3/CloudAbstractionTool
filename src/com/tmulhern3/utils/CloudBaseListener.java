@@ -2,9 +2,6 @@ package com.tmulhern3.utils;
 
 // Generated from C:\Users\Tim\IdeaProjects\CloudAbstractionTool\resources\Cloud.g4 by ANTLR 4.5.3
 
-import com.tmulhern3.Driver;
-import com.tmulhern3.exceptions.CompilationException;
-import com.tmulhern3.parser.CloudLexer;
 import com.tmulhern3.parser.CloudListener;
 import com.tmulhern3.parser.CloudParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -92,15 +89,11 @@ public class CloudBaseListener implements CloudListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterServer_dec_seq(CloudParser.Server_dec_seqContext ctx) {
-	    if (ctx.start.getType() == CloudLexer.ID && ctx.start.getText().equals("id")) {
-	        if (serverSet.contains(ctx.stop.getText())) {
-                fatalError(ctx.stop.getText() + " at line " + ctx.start.getLine() + " is already defined!");
-            }
-            serverSet.add(ctx.stop.getText());
-        } else {
-            fatalError("Must specify ID!");
-        }
+		WalkAstUtils.printVarsInServerDecSeq(ctx);
     }
+
+
+
 	/**
 	 * {@inheritDoc}
 	 *

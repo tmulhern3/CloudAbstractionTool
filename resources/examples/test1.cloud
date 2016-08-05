@@ -4,10 +4,12 @@ begin
 
     server = (
         id = test
+        tag = testtest
+        name = testtesttest
     )
 
     server = (
-        id = tests
+        id = testtesttesttest
     )
 
 end

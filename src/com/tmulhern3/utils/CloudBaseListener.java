@@ -2,6 +2,7 @@ package com.tmulhern3.utils;
 
 // Generated from C:\Users\Tim\IdeaProjects\CloudAbstractionTool\resources\Cloud.g4 by ANTLR 4.5.3
 
+import com.tmulhern3.models.resources.Server;
 import com.tmulhern3.parser.CloudListener;
 import com.tmulhern3.parser.CloudParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -19,7 +20,9 @@ import java.util.logging.Logger;
  * of the available methods.
  */
 public class CloudBaseListener implements CloudListener {
-    private Set<String> serverSet = new HashSet();
+    private Set<Server> serverSet = new HashSet();
+	private String provider;
+	private WalkAstUtils walkAstUtils;
 
     private static Logger logger = Logger.getLogger(CloudBaseListener.class.getName());
 
@@ -34,13 +37,21 @@ public class CloudBaseListener implements CloudListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitProgram(CloudParser.ProgramContext ctx) { }
+	@Override public void exitProgram(CloudParser.ProgramContext ctx) {
+		// TODO write to tf file
+		for (Server server : serverSet) {
+			System.out.println(server);
+		}
+	}
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterProvider(CloudParser.ProviderContext ctx) { }
+	@Override public void enterProvider(CloudParser.ProviderContext ctx) {
+		this.provider = ctx.children.get(2).getText();
+		walkAstUtils = new WalkAstUtils(provider);
+	}
 	/**
 	 * {@inheritDoc}
 	 *
@@ -89,7 +100,7 @@ public class CloudBaseListener implements CloudListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void enterServer_dec_seq(CloudParser.Server_dec_seqContext ctx) {
-		WalkAstUtils.printVarsInServerDecSeq(ctx);
+		walkAstUtils.walkServerSecDecSeq(ctx, serverSet);
     }
 
 
